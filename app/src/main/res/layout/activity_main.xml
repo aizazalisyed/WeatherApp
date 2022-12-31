@@ -79,24 +79,32 @@
                 android:layout_gravity="center"
                 android:src="@drawable/ic_search"/>
         </LinearLayout>
+
         <TextView
             android:id="@+id/idTVTemperature"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_below="@id/idLLEdt"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
             android:gravity="center_horizontal"
-            android:textColor="@color/white"
-            android:textSize="70dp"
             android:text="23"
-            android:layout_below="@id/idLLEdt"/>
+            android:textColor="@color/white"
+            android:textSize="70dp" />
+
         <ImageView
+            android:id="@+id/idIVIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/idIVIcon"
-            android:layout_centerHorizontal="true"
             android:layout_below="@id/idTVTemperature"
-            android:layout_margin="10dp"
-            android:src="@mipmap/ic_launcher"/>
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:src="@mipmap/ic_launcher" />
 
         <TextView
             android:layout_width="match_parent"
