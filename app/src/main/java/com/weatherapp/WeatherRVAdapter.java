@@ -1,6 +1,7 @@
 package com.weatherapp;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,8 +39,8 @@ public class WeatherRVAdapter extends RecyclerView.Adapter<WeatherRVAdapter.View
     public void onBindViewHolder(@NonNull WeatherRVAdapter.ViewHolder holder, int position) {
 
         WeatherRVModel model = weatherRVModelsArrayList.get(position);
-        holder.tempratureTV.setText(model.getTemperature()+ "°C");
-        Picasso.get().load("http:".concat(model.getIcon())).into(holder.conditionIV);
+        Log.d("viewholder", model.getIcon());
+        Picasso.get().load("https:".concat(model.getIcon())).into(holder.conditionIV);
         holder.windTV.setText(model.getWindSpeed()+ "Km/h");
 
 
@@ -72,11 +73,10 @@ public class WeatherRVAdapter extends RecyclerView.Adapter<WeatherRVAdapter.View
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
             windTV = itemView.findViewById(R.id.idTVWindSpeed);
             tempratureTV = itemView.findViewById(R.id.idTVTemperature);
             timeTV = itemView.findViewById(R.id.idTVTime);
-            conditionIV = itemView.findViewById(R.id.idTVCondition);
+            conditionIV = itemView.findViewById(R.id.idIVCondition);
         }
     }
 }

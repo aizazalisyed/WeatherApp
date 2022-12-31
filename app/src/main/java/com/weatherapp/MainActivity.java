@@ -13,6 +13,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AbsListView;
@@ -89,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
         Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         cityName = getCityName(location.getLongitude(), location.getLatitude());
+        Log.d("oncreate", cityName);
         getWeatherInfo(cityName);
 
         searchIV.setOnClickListener(v -> {
@@ -127,13 +129,14 @@ public class MainActivity extends AppCompatActivity {
 
         Geocoder gcd = new Geocoder(getBaseContext(), Locale.getDefault());
         try {
-            List<Address> addresses = gcd.getFromLocation(latitude, longitude, 10);
+            List<Address> addresses = gcd.getFromLocation(latitude, longitude, 1);
 
             for (Address adr: addresses){
                 if(adr!= null){
                     String city = adr.getLocality();
                     if (city!= null && !city.equals("")){
                         cityName = city;
+                        Log.d("getCityName", cityName);
                     }
                     else {
                         Toast.makeText(this, "User City Not Found", Toast.LENGTH_SHORT).show();
@@ -148,13 +151,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getWeatherInfo(String cityName){
-        String url = "http://api.weatherapi.com/v1/forecast.json?key=87af37dd59a246489ac42408222612&q="+cityName+"&aqi=no";
+        String url = "https://api.weatherapi.com/v1/forecast.json?key=87af37dd59a246489ac42408222612&q="+cityName+"&aqi=no";
         cityNameTV.setText(cityName);
         RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, response -> {
             loadingPB.setVisibility(View.GONE);
             homeRL.setVisibility(View.VISIBLE);
-            weatherRVModelArrayList.clear(); // if user searches multiple times for different weather so it won't be added to the arraylist multiple times.
+            weatherRVModelArrayList.clear();
+
+            // if user searches multiple times for different weather so it won't be added to the arraylist multiple times.
             try {
 
                 // getting information from API as JSON response
@@ -164,9 +169,11 @@ public class MainActivity extends AppCompatActivity {
                 String condition = response.getJSONObject("current").getJSONObject("condition").getString("text");
                 String conditionIcon = response.getJSONObject("current").getJSONObject("condition").getString("icon");
 
+
                 // setting our UIs
                 Picasso.get().load("http:".concat(conditionIcon)).into(iconIV);
                 conditionTV.setText(condition);
+
                 if(isDay==1){
                     // morning
                     Picasso.get().load("https://cdn.dribbble.com/users/925716/screenshots/3333720/attachments/722376/after_noon.png").into(backIV);
@@ -180,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject forecastObj = response.getJSONObject("forecast");
                 JSONObject forecastdayObj = forecastObj.getJSONArray("forecastday").getJSONObject(0);// index is zero because we are calling only first object in forecastObj.
                 JSONArray hourArray = forecastdayObj.getJSONArray("hour");
+
                 for (int i= 0; i< hourArray.length(); i++){
 
                     JSONObject hourobj = hourArray.getJSONObject(i);
@@ -193,12 +201,14 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 weatherRVAdapter.notifyDataSetChanged(); // notifying our adapter that data set has been changed
-
+                Log.d("json", "response received hereee");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-        }, error -> Toast.makeText(MainActivity.this, "Please enter valid city name", Toast.LENGTH_SHORT).show());
+        }, (error) -> {
+            Log.d("json", error.toString());
+            Toast.makeText(MainActivity.this, "Please enter valid city name", Toast.LENGTH_SHORT).show();});
 
         requestQueue.add(jsonObjectRequest);
 
