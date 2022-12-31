@@ -91,18 +91,15 @@ public class MainActivity extends AppCompatActivity {
         cityName = getCityName(location.getLongitude(), location.getLatitude());
         getWeatherInfo(cityName);
 
-        searchIV.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String city = cityEdT.getText().toString();
-                if (city.isEmpty()){
-                    Toast.makeText(MainActivity.this, "Please enter city name", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    cityNameTV.setText(cityName);
-                    getWeatherInfo(city);
+        searchIV.setOnClickListener(v -> {
+            String city = cityEdT.getText().toString();
+            if (city.isEmpty()){
+                Toast.makeText(MainActivity.this, "Please enter city name", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                cityNameTV.setText(cityName);
+                getWeatherInfo(city);
 
-                }
             }
         });
 
@@ -154,62 +151,54 @@ public class MainActivity extends AppCompatActivity {
         String url = "http://api.weatherapi.com/v1/forecast.json?key=87af37dd59a246489ac42408222612&q="+cityName+"&aqi=no";
         cityNameTV.setText(cityName);
         RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                loadingPB.setVisibility(View.GONE);
-                homeRL.setVisibility(View.VISIBLE);
-                weatherRVModelArrayList.clear(); // if user searches multiple times for different weather so it won't be added to the arraylist multiple times.
-                try {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, response -> {
+            loadingPB.setVisibility(View.GONE);
+            homeRL.setVisibility(View.VISIBLE);
+            weatherRVModelArrayList.clear(); // if user searches multiple times for different weather so it won't be added to the arraylist multiple times.
+            try {
 
-                    // getting information from API as JSON response
-                    String temperature = response.getJSONObject("current").getString("temp_c");
-                    temperatureTV.setText(temperature+"°C");
-                    int isDay = response.getJSONObject("current").getInt("is_day");
-                    String condition = response.getJSONObject("current").getJSONObject("condition").getString("text");
-                    String conditionIcon = response.getJSONObject("current").getJSONObject("condition").getString("icon");
+                // getting information from API as JSON response
+                String temperature = response.getJSONObject("current").getString("temp_c");
+                temperatureTV.setText(temperature+"°C");
+                int isDay = response.getJSONObject("current").getInt("is_day");
+                String condition = response.getJSONObject("current").getJSONObject("condition").getString("text");
+                String conditionIcon = response.getJSONObject("current").getJSONObject("condition").getString("icon");
 
-                    // setting our UIs
-                    Picasso.get().load("http:".concat(conditionIcon)).into(iconIV);
-                    conditionTV.setText(condition);
-                    if(isDay==1){
-                        // morning
-                        Picasso.get().load("https://cdn.dribbble.com/users/925716/screenshots/3333720/attachments/722376/after_noon.png").into(backIV);
-                    }
-                    else{
-                        //night
-                        Picasso.get().load("https://cdn.dribbble.com/users/925716/screenshots/3333720/attachments/722375/night.png").into(backIV);
-                    }
-
-                    // now getting forecast from API.
-                    JSONObject forecastObj = response.getJSONObject("forecast");
-                    JSONObject forecastdayObj = forecastObj.getJSONArray("forecastday").getJSONObject(0);// index is zero because we are calling only first object in forecastObj.
-                    JSONArray hourArray = forecastdayObj.getJSONArray("hour");
-                    for (int i= 0; i< hourArray.length(); i++){
-
-                        JSONObject hourobj = hourArray.getJSONObject(i);
-                        String time =  hourobj.getString("time");
-                        String temper =  hourobj.getString("temp_c");
-                        String img =  hourobj.getJSONObject("condition").getString("icon");
-                        String wind =  hourobj.getString("wind_kph");
-
-                        weatherRVModelArrayList.add(new WeatherRVModel(time, temper, img, wind));
-
-                    }
-
-                    weatherRVAdapter.notifyDataSetChanged(); // notifying our adapter that data set has been changed
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                // setting our UIs
+                Picasso.get().load("http:".concat(conditionIcon)).into(iconIV);
+                conditionTV.setText(condition);
+                if(isDay==1){
+                    // morning
+                    Picasso.get().load("https://cdn.dribbble.com/users/925716/screenshots/3333720/attachments/722376/after_noon.png").into(backIV);
+                }
+                else{
+                    //night
+                    Picasso.get().load("https://cdn.dribbble.com/users/925716/screenshots/3333720/attachments/722375/night.png").into(backIV);
                 }
 
+                // now getting forecast from API.
+                JSONObject forecastObj = response.getJSONObject("forecast");
+                JSONObject forecastdayObj = forecastObj.getJSONArray("forecastday").getJSONObject(0);// index is zero because we are calling only first object in forecastObj.
+                JSONArray hourArray = forecastdayObj.getJSONArray("hour");
+                for (int i= 0; i< hourArray.length(); i++){
+
+                    JSONObject hourobj = hourArray.getJSONObject(i);
+                    String time =  hourobj.getString("time");
+                    String temper =  hourobj.getString("temp_c");
+                    String img =  hourobj.getJSONObject("condition").getString("icon");
+                    String wind =  hourobj.getString("wind_kph");
+
+                    weatherRVModelArrayList.add(new WeatherRVModel(time, temper, img, wind));
+
+                }
+
+                weatherRVAdapter.notifyDataSetChanged(); // notifying our adapter that data set has been changed
+
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(MainActivity.this, "Please enter valid city name", Toast.LENGTH_SHORT).show();
-            }
-        });
+
+        }, error -> Toast.makeText(MainActivity.this, "Please enter valid city name", Toast.LENGTH_SHORT).show());
 
         requestQueue.add(jsonObjectRequest);
 
