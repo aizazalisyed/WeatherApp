@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         searchIV = findViewById(R.id.idIVSearch);
         weatherRV = findViewById(R.id.idRvWeather);
 
+
         weatherRVModelArrayList = new ArrayList<>();
         weatherRVAdapter = new WeatherRVAdapter(this, weatherRVModelArrayList);
         weatherRV.setAdapter(weatherRVAdapter);
@@ -94,6 +95,9 @@ public class MainActivity extends AppCompatActivity {
         getWeatherInfo(cityName);
 
         searchIV.setOnClickListener(v -> {
+
+            loadingPB.setVisibility(View.VISIBLE);
+            homeRL.setVisibility(View.GONE);
             String city = cityEdT.getText().toString();
             if (city.isEmpty()){
                 Toast.makeText(MainActivity.this, "Please enter city name", Toast.LENGTH_SHORT).show();
