@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
         Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         cityName = getCityName(location.getLongitude(), location.getLatitude());
+
         Log.d("oncreate", cityName);
         getWeatherInfo(cityName);
 
