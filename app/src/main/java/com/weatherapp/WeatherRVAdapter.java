@@ -42,6 +42,7 @@ public class WeatherRVAdapter extends RecyclerView.Adapter<WeatherRVAdapter.View
         Log.d("viewholder", model.getIcon());
         Picasso.get().load("https:".concat(model.getIcon())).into(holder.conditionIV);
         holder.windTV.setText(model.getWindSpeed()+ "Km/h");
+        holder.temperatureTV.setText(model.getTemperature());
 
 
         // For changing the time format that we were getting form the API
@@ -68,13 +69,13 @@ public class WeatherRVAdapter extends RecyclerView.Adapter<WeatherRVAdapter.View
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-        private TextView windTV,tempratureTV, timeTV;
+        private TextView windTV,temperatureTV, timeTV;
         private ImageView conditionIV;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             windTV = itemView.findViewById(R.id.idTVWindSpeed);
-            tempratureTV = itemView.findViewById(R.id.idTVTemperature);
+            temperatureTV = itemView.findViewById(R.id.idTVTemperature);
             timeTV = itemView.findViewById(R.id.idTVTime);
             conditionIV = itemView.findViewById(R.id.idIVCondition);
         }

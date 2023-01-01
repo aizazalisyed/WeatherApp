@@ -97,9 +97,12 @@ public class MainActivity extends AppCompatActivity {
         searchIV.setOnClickListener(v -> {
 
             loadingPB.setVisibility(View.VISIBLE);
-            homeRL.setVisibility(View.GONE);
+
             String city = cityEdT.getText().toString();
             if (city.isEmpty()){
+                homeRL.setVisibility(View.VISIBLE);
+                loadingPB.setVisibility(View.GONE);
+                ;
                 Toast.makeText(MainActivity.this, "Please enter city name", Toast.LENGTH_SHORT).show();
             }
             else {
@@ -212,6 +215,9 @@ public class MainActivity extends AppCompatActivity {
 
         }, (error) -> {
             Log.d("json", error.toString());
+            homeRL.setVisibility(View.VISIBLE);
+            loadingPB.setVisibility(View.GONE);
+            cityNameTV.setText("City not found");
             Toast.makeText(MainActivity.this, "Please enter valid city name", Toast.LENGTH_SHORT).show();});
 
         requestQueue.add(jsonObjectRequest);
