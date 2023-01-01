@@ -169,9 +169,9 @@ public class MainActivity extends AppCompatActivity {
                 String condition = response.getJSONObject("current").getJSONObject("condition").getString("text");
                 String conditionIcon = response.getJSONObject("current").getJSONObject("condition").getString("icon");
 
-
+                Log.d("conditionicon", conditionIcon);
                 // setting our UIs
-                Picasso.get().load("http:".concat(conditionIcon)).into(iconIV);
+                Picasso.get().load("https:".concat(conditionIcon)).into(iconIV);
                 conditionTV.setText(condition);
 
                 if(isDay==1){
@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 weatherRVAdapter.notifyDataSetChanged(); // notifying our adapter that data set has been changed
-                Log.d("json", "response received hereee");
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
