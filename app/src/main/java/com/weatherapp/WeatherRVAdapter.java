@@ -44,15 +44,12 @@ public class WeatherRVAdapter extends RecyclerView.Adapter<WeatherRVAdapter.View
         holder.windTV.setText(model.getWindSpeed()+ "Km/h");
         holder.temperatureTV.setText(model.getTemperature());
 
-
         // For changing the time format that we were getting form the API
 
         SimpleDateFormat input = new SimpleDateFormat("yyyy-MM-dd hh:mm");
         SimpleDateFormat output = new SimpleDateFormat("hh:mm aa");
 
-
         //exception handling for parsing
-
         try {
             Date t = input.parse(model.getTime());
             holder.timeTV.setText(output.format(t));

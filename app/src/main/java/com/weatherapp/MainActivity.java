@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private String getCityName(double longitude, double latitude){
+    public String getCityName(double longitude, double latitude){
 
         String cityName = "Not found";
 
